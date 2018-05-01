@@ -80,15 +80,17 @@ for t = 1:m
   z_3 = Theta2 * a_2;#10*1
   a_3 = sigmoid(z_3);#10*1
   Y = zeros(num_labels, 1);#10*1
-  Y(y(c),1) = 1;
+  Y(y(t),1) = 1;
   delta_3 = a_3 - Y;#10*1
   delta_2 = (Theta2' * delta_3) .* sigmoidGradient([1; z_2]);
-  Theta1_grad = Theta1_grad + (delta_2*a_1')(2:end,:);
+  Theta1_grad = Theta1_grad + (delta_2(2:end)*a_1');
   Theta2_grad = Theta2_grad + (delta_3*a_2'); 
 end
 
-Theta1_grad = 1/m * sum(Theta1_grad(:));
-Theta2_grad = 1/m * sum(Theta2_grad(:));
+Theta1_grad = 1/m * Theta1_grad;
+Theta1_grad = [Theta1_grad(:,1) (Theta1_grad + lambda/m*Theta1)(:,2:end)];
+Theta2_grad = 1/m * Theta2_grad;
+Theta2_grad = [Theta2_grad(:,1) (Theta2_grad + lambda/m*Theta2)(:,2:end)];
 
 
 
